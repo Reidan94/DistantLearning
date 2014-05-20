@@ -1,0 +1,48 @@
+﻿
+namespace DistantLearningSystem.Models.LogicModels.Services
+{
+    //Этот класс будет хранить настройки для подгрузки фотографий на сервер
+    public class StaticSettings
+    {
+        public static string UploadFolderPath
+        {
+            get { return "Images"; }
+        }
+
+        public static string CountriesUploadFolderPath
+        {
+            get { return UploadFolderPath + "/Countries/"; }
+        }
+
+        public static string ConceptIconsUploadPath
+        {
+            get { return UploadFolderPath + "/Concepts"; }
+        }
+
+        public static string AvatarsUploadFolderPath
+        {
+            get { return UploadFolderPath + "/Avatars/"; }
+        }
+
+        public static int MinUserExperince
+        {
+            get { return 10; }
+        }
+
+        public static string ConfirmationMessage
+        {
+            get
+            {
+                return string.
+                    Format("Вы успешно зарегестрировались на сайте дистанционного"
+                    + "обучения по курсу - Базы данных."
+                    + " Для подтверждения регистрации перейдите по ссылке : ");
+            }
+        }
+
+        public static string ConfirmationTitle
+        {
+            get { return "Подтверждение регистрации"; }
+        }
+    }
+}

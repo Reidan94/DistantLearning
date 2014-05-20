@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="eac5bc18b79b45f0a2b623b2435552b1" Name="Diagram1" ZoomLevel="34">
+        <EntityTypeShape EntityType="CourseDataBaseModel.Classification" Width="1.5" PointX="9.75" PointY="4" IsExpanded="true" />
+        <EntityTypeShape EntityType="CourseDataBaseModel.ClassificationType" Width="1.5" PointX="7.5" PointY="1.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="CourseDataBaseModel.Concept" Width="1.5" PointX="9.75" PointY="8.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="CourseDataBaseModel.Connection" Width="1.5" PointX="15" PointY="6.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="CourseDataBaseModel.Definition" Width="1.5" PointX="12" PointY="6.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="CourseDataBaseModel.Department" Width="1.5" PointX="3" PointY="5.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="CourseDataBaseModel.Faculty" Width="1.5" PointX="0.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="CourseDataBaseModel.Formulation" Width="1.5" PointX="14.25" PointY="2.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="CourseDataBaseModel.Lecturer" Width="1.5" PointX="5.25" PointY="4.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="CourseDataBaseModel.Reference" Width="1.5" PointX="17.25" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="CourseDataBaseModel.Source" Width="1.5" PointX="15" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="CourseDataBaseModel.Student" Width="1.5" PointX="7.5" PointY="4.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="CourseDataBaseModel.StudentConnection" Width="1.5" PointX="20.25" PointY="5.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="CourseDataBaseModel.StudentGroup" Width="1.5" PointX="5.25" PointY="1.75" IsExpanded="true" />
+        <AssociationConnector Association="CourseDataBaseModel.FK_Classification_ClassificationType" ManuallyRouted="false" />
+        <AssociationConnector Association="CourseDataBaseModel.FK_Classification_Student" ManuallyRouted="false" />
+        <AssociationConnector Association="CourseDataBaseModel.FK_Connection_Classification" ManuallyRouted="false" />
+        <AssociationConnector Association="CourseDataBaseModel.FK_Concept_Student" ManuallyRouted="false" />
+        <AssociationConnector Association="CourseDataBaseModel.FK_Connection_ChildConcept" ManuallyRouted="false" />
+        <AssociationConnector Association="CourseDataBaseModel.FK_Connection_ParentConcept" ManuallyRouted="false" />
+        <AssociationConnector Association="CourseDataBaseModel.FK_Definition_Concept" ManuallyRouted="false" />
+        <AssociationConnector Association="CourseDataBaseModel.FK_StudentConnection_Connection" ManuallyRouted="false" />
+        <AssociationConnector Association="CourseDataBaseModel.FK_Definition_Student" ManuallyRouted="false" />
+        <AssociationConnector Association="CourseDataBaseModel.FK_Formulation_Definition" ManuallyRouted="false" />
+        <AssociationConnector Association="CourseDataBaseModel.FK_Reference_Definition" ManuallyRouted="false" />
+        <AssociationConnector Association="CourseDataBaseModel.FK__Departmen__Facul__5E8A0973" ManuallyRouted="false" />
+        <AssociationConnector Association="CourseDataBaseModel.FK__Lecturer__Depart__625A9A57" ManuallyRouted="false" />
+        <AssociationConnector Association="CourseDataBaseModel.FK_Formulation_Student" ManuallyRouted="false" />
+        <AssociationConnector Association="CourseDataBaseModel.FK_Student_Lecturer" ManuallyRouted="false" />
+        <AssociationConnector Association="CourseDataBaseModel.FK_Reference_Source" ManuallyRouted="false" />
+        <AssociationConnector Association="CourseDataBaseModel.FK_Reference_Student" ManuallyRouted="false" />
+        <AssociationConnector Association="CourseDataBaseModel.FK__Student__GroupId__6FB49575" ManuallyRouted="false" />
+        <AssociationConnector Association="CourseDataBaseModel.FK_StudentConnection_Student" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

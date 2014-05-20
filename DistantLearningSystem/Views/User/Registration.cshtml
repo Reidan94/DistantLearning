@@ -1,0 +1,23 @@
+﻿@using DistantLearningSystem.Models.DataModels
+@{
+    ViewBag.Title = "Регистрация";
+    Layout = "~/Views/Shared/Dashboard_Layout.cshtml";
+    ProcessResult result = ViewBag.Result;
+}
+@HtmlManager.ProccessResultContainer(ViewBag.Result)
+<div class="row">
+    <div class="col-lg-12">
+        <div class="action-buttons">
+            @HtmlManager.AddButton(Html.ActionLink("Студент", "RegistrateStudent", "User"))
+            @HtmlManager.EditButton(Html.ActionLink("Преподаватель", "RegistrateLecturer", "User"))
+        </div>
+    </div>
+</div>
+@section Styles
+{
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+    </style>
+}
