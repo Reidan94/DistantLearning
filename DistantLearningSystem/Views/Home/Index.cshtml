@@ -2,13 +2,4 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/Dashboard_Layout.cshtml";
 }
-
-<div class="row">
-    <div class="col-lg-12">
-        <div class="action-buttons">
-            @HtmlManager.AddButton(Html.ActionLink("Регистрация", "Registration", "User"))
-            @HtmlManager.EditButton(Html.ActionLink("Вход", "LogIn", "User"))
-        </div>
-    </div>
-</div>
-
+@HtmlManager.ProccessResultContainer(ViewBag.Result)

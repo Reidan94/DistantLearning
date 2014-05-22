@@ -16,7 +16,7 @@ namespace DistantLearningSystem.Models.DataModels
     {
         public Lecturer()
         {
-            this.Students = new HashSet<Student>();
+            this.StudentGroups = new HashSet<StudentGroup>();
         }
     
         public int Id { get; set; }
@@ -34,7 +34,7 @@ namespace DistantLearningSystem.Models.DataModels
         public int Activation { get; set; }
     
         public virtual Department Department { get; set; }
-        public virtual ICollection<Student> Students { get; set; }
+        public virtual ICollection<StudentGroup> StudentGroups { get; set; }
 
         public static explicit operator UserModel(Lecturer lecturer)
         {
@@ -49,6 +49,5 @@ namespace DistantLearningSystem.Models.DataModels
                 Email = lecturer.Email
             };
         }
-
     }
 }

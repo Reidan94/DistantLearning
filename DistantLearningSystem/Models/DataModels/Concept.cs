@@ -28,6 +28,7 @@ namespace DistantLearningSystem.Models.DataModels
         public Nullable<int> Rating { get; set; }
         public int Status { get; set; }
         public Nullable<int> StudentId { get; set; }
+        public string ImgSrc { get; set; }
     
         public virtual Student Student { get; set; }
         public virtual ICollection<Connection> Connections { get; set; }

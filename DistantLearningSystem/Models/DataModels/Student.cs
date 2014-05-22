@@ -11,7 +11,7 @@ namespace DistantLearningSystem.Models.DataModels
 {
     using System;
     using System.Collections.Generic;
-
+    
     public partial class Student
     {
         public Student()
@@ -23,7 +23,7 @@ namespace DistantLearningSystem.Models.DataModels
             this.References = new HashSet<Reference>();
             this.StudentConnections = new HashSet<StudentConnection>();
         }
-
+    
         public int Id { get; set; }
         public string Name { get; set; }
         public string Login { get; set; }
@@ -32,16 +32,14 @@ namespace DistantLearningSystem.Models.DataModels
         public int GroupId { get; set; }
         public System.DateTime RegDate { get; set; }
         public System.DateTime LastVisitDate { get; set; }
-        public Nullable<int> LecturerId { get; set; }
         public string LastName { get; set; }
         public string ImgSrc { get; set; }
         public int Activation { get; set; }
-
+    
         public virtual ICollection<Classification> Classifications { get; set; }
         public virtual ICollection<Concept> Concepts { get; set; }
         public virtual ICollection<Definition> Definitions { get; set; }
         public virtual ICollection<Formulation> Formulations { get; set; }
-        public virtual Lecturer Lecturer { get; set; }
         public virtual ICollection<Reference> References { get; set; }
         public virtual StudentGroup StudentGroup { get; set; }
         public virtual ICollection<StudentConnection> StudentConnections { get; set; }
@@ -59,6 +57,5 @@ namespace DistantLearningSystem.Models.DataModels
                 Email = student.Email
             };
         }
-
     }
 }

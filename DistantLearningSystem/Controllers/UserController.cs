@@ -2,10 +2,12 @@
 using System.Web;
 using System.Web.Mvc;
 using DistantLearningSystem.Models;
+using System.Linq;
 using DistantLearningSystem.Models.DataModels;
 using DistantLearningSystem.Models.LogicModels.Managers;
 using DistantLearningSystem.Models.LogicModels.Services;
 using DistantLearningSystem.Models.LogicModels.ViewModels;
+using System.Collections.Generic;
 
 namespace DistantLearningSystem.Controllers
 {
@@ -13,10 +15,133 @@ namespace DistantLearningSystem.Controllers
     {
         public ActionResult Index()
         {
-            UserModel user = DataManager.DefineUser(HttpContext);
+            var user = DataManager.DefineUser(HttpContext);
             if (user == null)
                 return RedirectToAction("LogIn");
             return View(user);
+        }
+
+        public ActionResult ManageGroupAdding(string groupId, string lecturerId)
+        {
+            ProcessResult processResult = null;
+            var user = DataManager.DefineUser(HttpContext);
+            if (user.Id.ToString() == lecturerId)
+                processResult = DataManager.University.SetGroupLecturer(user.Id, Convert.ToInt32(groupId));
+
+            return RedirectToAction("Index", "Home", new { result = processResult.Id });
+        }
+
+        public ActionResult AddGroup()
+        {
+            var user = DataManager.DefineUser(HttpContext);
+            if (user.UserType != UserType.Lecturer)
+                RedirectToAction("Index", "Home", new
+                {
+                    result = ProcessResults.ErrorOccured.Id
+                });
+            ViewBag.Groups = DataManager.University.GetGroups();
+            ViewBag.UserId = user.Id;
+            return View();
+        }
+
+        public ActionResult EditProfile()
+        {
+            var user = DataManager.DefineUser(HttpContext);
+            if (user.UserType == UserType.Student)
+                return RedirectToAction("EditStudent");
+            else return RedirectToAction("EditLecturer");
+        }
+
+        public ActionResult EditLecturer()
+        {
+            var user = DataManager.DefineUser(HttpContext);
+            var lecturer = DataManager.Lecturer.GetLecturer(user.Id);
+            return View(lecturer);
+        }
+
+        public ActionResult ManageLecturerEditing(string Id, string Name,
+            string LastName, string Login,
+            string Email, string Password,
+            HttpPostedFileBase imageUpload)
+        {
+            var lecturer = new Lecturer()
+            {
+                Id = Convert.ToInt32(Id),
+                Name = Name,
+                Login = Login,
+                Email = Email,
+                Password = Password,
+                LastName = LastName
+            };
+
+            ProcessResult p = DataManager.Lecturer.EditLecturer(lecturer, Server, imageUpload);
+            return RedirectToAction("Index", "Home", new { result = p.Id });
+        }
+
+        public ActionResult ManageStudentEditing(string Id, string Name,
+        string LastName, string Login,
+        string Email, string Password,
+        HttpPostedFileBase imageUpload)
+        {
+            var lecturer = new Student()
+            {
+                Id = Convert.ToInt32(Id),
+                Name = Name,
+                Login = Login,
+                Email = Email,
+                Password = Password,
+                LastName = LastName
+            };
+
+            ProcessResult p = DataManager.Student.EditStudent(lecturer, Server, imageUpload);
+            return RedirectToAction("Index", "Home", new { result = p.Id });
+        }
+
+
+        public ActionResult EditStudent()
+        {
+            var user = DataManager.DefineUser(HttpContext);
+            var student = DataManager.Student.GetStudent(user.Id);
+            return View(student);
+        }
+
+        public ActionResult Profile()
+        {
+            UserModel user = DataManager.DefineUser(HttpContext);
+            if (user == null)
+                return RedirectToAction("LogIn");
+            if (user.UserType == UserType.Student)
+                return RedirectToAction("GetStudentInfo");
+            else return RedirectToAction("GetLecturerInfo");
+        }
+
+        public ActionResult GetLecturerInfo(int userId = -1)
+        {
+            UserModel user = null;
+            Lecturer lecturer = null;
+            if (userId == -1)
+            {
+                user = DataManager.DefineUser(HttpContext);
+                lecturer = DataManager.Lecturer.GetLecturer(user.Id);
+            }
+            else
+                lecturer = DataManager.Lecturer.GetLecturer(userId);
+            return View(lecturer);
+        }
+
+
+        public ActionResult GetStudentInfo(int userId = -1)
+        {
+            UserModel user = null;
+            Student student = null;
+            if (userId == -1)
+            {
+                user = DataManager.DefineUser(HttpContext);
+                student = DataManager.Student.GetStudent(user.Id);
+            }
+            else
+                student = DataManager.Student.GetStudent(userId);
+            return View(student);
         }
 
         public ActionResult Logout()
@@ -54,8 +179,15 @@ namespace DistantLearningSystem.Controllers
         }
 
         [HttpPost]
-        public ActionResult ManageLogIn(LoginModel loginModel)
+        public ActionResult ManageLogIn(string LoginOrEmail, string Password, string WhoAreU)
         {
+            var loginModel = new LoginModel()
+            {
+                LoginOrEmail = LoginOrEmail,
+                Password = Security.GetHashString(Password),
+                UserType = WhoAreU.ToLower() == "студент" ? UserType.Student : UserType.Lecturer
+            };
+
             UserModel user;
             ProcessResult result = DataManager.Authentification.LogInUser(loginModel, out user);
             if (result.Succeeded && user != null)
@@ -77,19 +209,52 @@ namespace DistantLearningSystem.Controllers
             UserModel user = DataManager.DefineUser(HttpContext);
             if (user != null)
                 return RedirectToAction("Index");
+            ViewBag.Groups = DataManager.University.GetGroups();
             if (result.HasValue)
+            {
                 ViewBag.Result = ProcessResults.GetById(result.Value);
+            }
             return View();
+        }
+
+        public ActionResult AjaxRegistrationFormLoad(string data)
+        {
+            if (data.ToLower() == "студент")
+                return RedirectToAction("RegistrateStudent");
+            else return RedirectToAction("RegistrateLecturer");
+        }
+
+        public ActionResult RegistrateLecturer()
+        {
+            return PartialView();
         }
 
         public ActionResult RegistrateStudent()
         {
-            return View();
+            List<StudentGroup> groups = DataManager.University.GetGroups().ToList();
+            ViewBag.Groups = groups;
+            return PartialView();
         }
 
         [HttpPost]
-        public ActionResult ManageLecturerRegistration(Lecturer registrationModel, HttpPostedFileBase imageUpload)
+        public ActionResult ManageLecturerRegistration(
+            string Name, string LastName, string Login,
+            string Email, string Password, string Subject,
+            string Position, HttpPostedFileBase imageUpload)
         {
+            var registrationModel = new Lecturer()
+            {
+                Name = Name,
+                LastName = LastName,
+                Login = Login,
+                Password = Password,
+                DepartmentId = 1,
+                Faculty = "КН",
+                Email = Email,
+                Subject = Subject,
+                Position = Position
+            };
+
             ProcessResult result = DataManager.
                 Lecturer.
                 RegistrateLecturer(HttpContext,
@@ -97,15 +262,13 @@ namespace DistantLearningSystem.Controllers
                 Server,
                 imageUpload);
 
-            if (result.Succeeded)
-                return RedirectToAction("Registration", "User", new { result = result.Id });
-            return View();
+            return RedirectToAction("Registration", "User", new { result = result.Id });
         }
 
         [HttpPost]
         public ActionResult ManageStudentRegistration(
             string Name, string LastName, string Login,
-            string Email, string Password, HttpPostedFileBase imageUpload)
+            string Email, string Password, string groupId, HttpPostedFileBase imageUpload)
         {
             ProcessResult result = DataManager.
                 Student.
@@ -116,22 +279,19 @@ namespace DistantLearningSystem.Controllers
                     LastName = LastName,
                     Email = Email,
                     Password = Password,
-                    Login = Login
+                    Login = Login,
+                    GroupId = Convert.ToInt32(groupId)
                 },
                 Server,
                 imageUpload);
 
-            if (!result.Succeeded)
-                return RedirectToAction("Registration", "User", new { result = result.Id });
-            return View();
+            return RedirectToAction("Registration", "User", new { result = result.Id });
         }
 
         public ActionResult Confirm(string hash)
         {
-            if (DataManager.ConfirmRegistration(hash))
-                ViewBag.Message = "Регистрация подтверждена";
-            else return RedirectToAction("Error");
-            return View();
+            var result = DataManager.Authentification.ConfirmRegistration(hash);
+            return RedirectToAction("Registration", "User", new { result = result.Id });
         }
 
         private void SetUser(UserModel user, string hashedKey)

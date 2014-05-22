@@ -1,5 +1,7 @@
-﻿@{
+﻿@using DistantLearningSystem.Models.LogicModels.Managers
+@{
     ViewBag.Title = "Энциклопедия";
+    var user = DataManager.DefineUser(Context);
 }
 <!DOCTYPE html>
 <html>
@@ -32,41 +34,54 @@
             <div class="sidebar-collapse">
                 <ul class="nav" id="side-menu">
                     <li>
-                        <a href="@Url.Action("Index","Dashboard")"><i class="fa fa-home fa-fw"></i> Понятия</a>
+                        <a href="@Url.Action("Index","Home")"><i class="fa fa-home fa-fw"></i> Главная</a>
                     </li>
                     <li>
-                        <a href="@Url.Action("Users","Dashboard")"><i class="fa fa-users fa-fw"></i> Пользователи</a>
+                        <a href="@Url.Action("GetConcepts","Search")"><i class="fa fa-users fa-fw"></i> База понятий</a>
                     </li>
                     <li>
-                        <a href="@Url.Action("Countries","Dashboard")"><i class="fa im icon-news fa-fw"></i>Страны</a>
+                        <a href="@Url.Action("GetLectures","Search")"><i class="fa fa-home fa-fw"></i> Преподаватели</a>
                     </li>
                     <li>
-                        <a href="@Url.Action("Regions","Dashboard")"><i class="fa im icon-news fa-fw"></i>Регионы</a>
+                        <a href="@Url.Action("GetStudents","Search")"><i class="fa fa-users fa-fw"></i> Студенты</a>
                     </li>
-                    <li>
-                        <a href="@Url.Action("Places","Dashboard")"><i class="fa im icon-news fa-fw"></i>Места</a>
-                    </li>
-                    <li>
-                        <a href="@Url.Action("Routes","Dashboard")"><i class="fa im icon-news fa-fw"></i>Маршруты</a>
-                    </li>
-                <li>
-                    <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Статистика</a>
-                </li>
-                <li>
-                    <a href="#"><i class="fa fa-gears fa-fw"></i> Настройки<span class="fa arrow"></span></a>
-                    <ul class="nav nav-second-level">
+                    @if (user != null && user.UserType == DistantLearningSystem.Models.UserType.Lecturer)
+                    {
                         <li>
-                            <a href="#">Авто</a>
+                            <a href="@Url.Action("Sources","Search")"><i class="fa fa-users fa-fw"></i> База источников</a>
+                        </li>
+                    }                    
+                    @*<li>
+                                <a href="@Url.Action("Countries","Dashboard")"><i class="fa im icon-news fa-fw"></i>Страны</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Regions","Dashboard")"><i class="fa im icon-news fa-fw"></i>Регионы</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Places","Dashboard")"><i class="fa im icon-news fa-fw"></i>Места</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("Routes","Dashboard")"><i class="fa im icon-news fa-fw"></i>Маршруты</a>
+                            </li>
+                        <li>
+                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Статистика</a>
                         </li>
                         <li>
-                            <a href="#">Новости</a>
+                            <a href="#"><i class="fa fa-gears fa-fw"></i> Настройки<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="#">Авто</a>
+                                </li>
+                                <li>
+                                    <a href="#">Новости</a>
+                                </li>
+                            </ul>
+                            <!-- /.nav-second-level -->
                         </li>
-                    </ul>
-                    <!-- /.nav-second-level -->
-                </li>
-                <li>
-                    <a href="/"><i class="fa fa-arrow-circle-o-left  fa-fw"></i> Назад к сайту</a>
-                </li>
+                    *@
+                    <li>
+                        <a href="/"><i class="fa fa-arrow-circle-o-left  fa-fw"></i> Назад к сайту</a>
+                    </li>
                 </ul>
                 <!-- /#side-menu -->
             </div>
@@ -76,7 +91,24 @@
         <div id="page-wrapper">
             <div class="breadcrumbs flat">
             </div>
+            <div class="row" style="height:10px">
+                <div class="col-lg-12" style="height:10px">
+                    <div class="action-buttons">
+                        @if (user != null)
+                        {
+                            @HtmlManager.EditButton(Html.ActionLink("Личный кабинет", "Profile", "User"));
+                            @HtmlManager.AddButton(Html.ActionLink("Выход", "Logout", "User"));
+                        }
+                        else
+                        {
+                            @HtmlManager.EditButton(Html.ActionLink("Вход", "LogIn", "User"));
+                            @HtmlManager.AddButton(Html.ActionLink("Регистрация", "Registration", "User"))
+                        }
+                    </div>
+                </div>
+            </div>
             @RenderBody()
+
         </div>
         <!-- /#page-wrapper -->
     </div>

@@ -30,16 +30,18 @@ namespace DistantLearningSystem.Models.LogicModels.Managers
 
                 lecturer.ImgSrc = SaveImage(lecturer.Id,
                     StaticSettings.AvatarsUploadFolderPath,
+                    lecturer.Email,
                     imageUpload,
                     server);
-                SaveChanges();
             }
 
-            if (!SendConfirmationMail(context, 
-                lecturer.Email, 
-                lecturer.Password, 
+            if (!SendConfirmationMail(context,
+                lecturer.Email,
+                lecturer.Password,
                 UserType.Lecturer.ToString()))
                 return ProcessResults.ErrorOccured;
+
+            lecturer.LastVisitDate = DateTime.Now;
 
             var st = entities.Lecturers.Add(lecturer);
             SaveChanges();
@@ -48,12 +50,45 @@ namespace DistantLearningSystem.Models.LogicModels.Managers
 
         public Lecturer LogInLecturer(LoginModel model)
         {
-            var find = entities.Lecturers.FirstOrDefault(x =>
+            var find = entities.Lecturers.ToList().FirstOrDefault(x =>
                 (x.Login == model.LoginOrEmail ||
                 x.Email == model.LoginOrEmail) &&
-                Security.GetHashString(model.Password) == x.Password);
+                model.Password == x.Password);
 
+            if (find == null)
+                return null;
+
+            UpdateLastVisitDate(find);
+            SaveChanges();
             return find;
+        }
+
+        public void UpdateLastVisitDate(int id)
+        {
+            var lecturer = GetLecturer(id);
+            if (lecturer == null)
+                return;
+            lecturer.LastVisitDate = DateTime.Now;
+            SaveChanges();
+        }
+
+        public void UpdateLastVisitDate(Lecturer lecturer)
+        {
+            if (lecturer == null)
+                return;
+            lecturer.LastVisitDate = DateTime.Now;
+            SaveChanges();
+        }
+
+        public Lecturer GetLecturer(int id)
+        {
+            return entities.Lecturers.FirstOrDefault(x => x.Id == id);
+        }
+
+        public void UpdateLastVisitDate(Student student)
+        {
+            student.LastVisitDate = DateTime.Now;
+            SaveChanges();
         }
 
         public void SetLastVisitDate(int lecturerId, DateTime date)
@@ -63,7 +98,7 @@ namespace DistantLearningSystem.Models.LogicModels.Managers
             SaveChanges();
         }
 
-        public IEnumerable<Lecturer> GetLectures() 
+        public IEnumerable<Lecturer> GetLectures()
         {
             return entities.Lecturers;
         }
@@ -81,26 +116,59 @@ namespace DistantLearningSystem.Models.LogicModels.Managers
 
         public Lecturer GetLecturer(Func<Lecturer, bool> predicate, bool confirmedOnly = true)
         {
-            return entities.Lecturers.FirstOrDefault(x =>
-                predicate(x) &&
-                (confirmedOnly ? x.Activation == 1 :
-                true));
+            foreach (var lecturer in entities.Lecturers.ToList())
+            {
+                if (confirmedOnly)
+                {
+                    if (predicate(lecturer) && (UserStatus)lecturer.Activation == UserStatus.Confirmed)
+                        return lecturer;
+                }
+                else
+                {
+                    if (predicate(lecturer))
+                        return lecturer;
+                }
+            }
+
+            return null;
+
         }
 
-        public bool EditLecturer(Lecturer newLecturer)
+        public ProcessResult EditLecturer(Lecturer newLecturer,
+            HttpServerUtilityBase server,
+            HttpPostedFileBase imageUpload)
         {
             var lecturerToEdit = entities.Lecturers.FirstOrDefault(x => x.Id == newLecturer.Id);
             if (lecturerToEdit == null)
-                return false;
+                return ProcessResults.ErrorOccured;
+
             lecturerToEdit.Login = newLecturer.Login;
             lecturerToEdit.Name = newLecturer.Name;
-            lecturerToEdit.Password = newLecturer.Password;
-            lecturerToEdit.Position = newLecturer.Position;
-            lecturerToEdit.Subject = newLecturer.Subject;
-            lecturerToEdit.Department = newLecturer.Department;
+            if (!String.IsNullOrEmpty(newLecturer.Password))
+                lecturerToEdit.Password = Security.GetHashString(newLecturer.Password);
             lecturerToEdit.Email = newLecturer.Email;
+            lecturerToEdit.LastName = newLecturer.LastName;
+            if (imageUpload != null)
+            {
+                if (imageUpload.ContentLength <= 0 || !Security.IsImage(imageUpload))
+                    return ProcessResults.InvalidImageFormat;
+
+                if (lecturerToEdit.ImgSrc != null)
+                    DeleteImage(lecturerToEdit.ImgSrc, server);
+                lecturerToEdit.ImgSrc = SaveImage(lecturerToEdit.Id,
+                    StaticSettings.AvatarsUploadFolderPath,
+                    lecturerToEdit.Email,
+                    imageUpload,
+                    server);
+            }
+            else if(!String.IsNullOrEmpty(lecturerToEdit.ImgSrc))
+            {
+                DeleteImage(lecturerToEdit.ImgSrc, server);
+                lecturerToEdit.ImgSrc = null;
+            }
+
             SaveChanges();
-            return true;
+            return ProcessResults.EditedSuccessfully;
         }
     }
 }

@@ -38,6 +38,7 @@ namespace DistantLearningSystem.Models.LogicModels.Services
                 smtpClient = new SmtpClient(host, port)
                 {
                     Credentials = new NetworkCredential(siteMail, passWord),
+                    EnableSsl = true
                 };
                 smtpClient.Send(message);
             }

@@ -17,9 +17,9 @@ namespace DistantLearningSystem.Models.LogicModels.Managers
             entities = new CourseDataBaseEntities();
         }
 
-        protected string SaveImage(int id, string folder, HttpPostedFileBase imageUpload, HttpServerUtilityBase server)
+        protected string SaveImage(int id, string folder, string email, HttpPostedFileBase imageUpload, HttpServerUtilityBase server)
         {
-            string relativePath = folder + id + Path.GetExtension(imageUpload.FileName);
+            string relativePath = folder + Security.GetHashString(id.ToString() + email) + Path.GetExtension(imageUpload.FileName);
             imageUpload.SaveAs(server.MapPath("~") + relativePath);
             return relativePath;
         }
@@ -41,7 +41,7 @@ namespace DistantLearningSystem.Models.LogicModels.Managers
         {
             var confirmationMessageSender = new ConfirmationMailSender();
             string token = Security.GetHashString(email + password + type);
-            
+
             if (context.Request.Url != null)
             {
                 string path = context.Request.Url.GetLeftPart(UriPartial.Authority) + "/User/Confirm?hash=" + token;

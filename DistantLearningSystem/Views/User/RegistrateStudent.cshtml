@@ -1,46 +1,6 @@
-﻿@model DistantLearningSystem.Models.DataModels.Student
-@{
-    ViewBag.Title = "RegistrateStudent";
-    Layout = "~/Views/Shared/Dashboard_Layout.cshtml";
-}
-<div class="breadcrumbs flat">
-    @HtmlManager.BreadCrumbs(Html, "Регистрация", "Registration", "User")
-</div>
-@section Scripts{
-    <script>
+﻿
+<div class="container" style="margin-top:20px;width:100%" id="form">
 
-        function submitForm() {
-            console.log('enter submit form!');
-            var Name = $("#Name");
-            var LastName = $("#LastName");
-            var Mail = $("#Email");
-            var PassWord = $("#Password");
-            var ConfirmPassword = $("#ConfirmPassword");
-            var imageUpload = $("#imageUpload");
-
-            console.log(Name.val());
-            if (Name.val() == "" ||
-                Mail.val() == "" ||
-                PassWord.val() == "" ||
-                ConfirmPassword.val() == "") {
-                document.getElementById("information").innerHTML = 'Заполнены не все поля';
-                $("#info").show();
-            }
-
-            console.log(PassWord.val());
-            console.log(ConfirmPassword.val());
-
-            if (ConfirmPassword.val() != PassWord.val()) {
-                document.getElementById("information").innerHTML = 'Пароли не совпадают';
-                $("#info").show();
-            }
-            else {
-                $("#main_form").submit();
-            }
-        }
-    </script>
-}
-<div class="container" style="margin-top:20px">
     <div id="info" style="display: none" class="alert alert-danger">
         <span id="information"></span>
     </div>
@@ -63,6 +23,8 @@
                     <input class="form-control" id="LastName" name="LastName" type="text" placeholder="Фамилия" required="required">
                 </div>
             </div>
+
+            @HtmlManager.DropDownList(Html, "Группы", "groupId", ViewBag.Groups)
 
             <div class="form-group">
                 <label class="control-label col-md-2" for="Login">Логин</label>

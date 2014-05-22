@@ -37,25 +37,6 @@ namespace DistantLearningSystem.Models.LogicModels.Managers
             Authentification = new AuthentificationManager();
         }
 
-        public static bool ConfirmRegistration(string hash)
-        {
-            var students = Student.GetStudents();
-            var lectures = Lecturer.GetLectures();
-
-            foreach (var lecturer in lectures)
-            {
-                if (Security.GetHashString(lecturer.Email + lecturer.Password + UserType.Lecturer.ToString()) == hash)
-                    return true;
-            }
-
-            foreach (var student in students)
-            {
-                if (Security.GetHashString(student.Email + student.Password + UserType.Student.ToString()) == hash)
-                    return true;
-            }
-
-            return false;
-        }
 
         public static UserModel DefineUser(HttpContextBase context)
         {

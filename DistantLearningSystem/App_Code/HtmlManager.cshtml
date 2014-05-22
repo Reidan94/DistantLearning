@@ -1,7 +1,52 @@
 ﻿@using System.Web.Mvc
 @using System.Web.Mvc.Html
+@using System.Collections
 @using HtmlHelper = System.Web.Mvc.HtmlHelper
 @using DistantLearningSystem.Models.DataModels
+
+@functions{
+    public static string DefineImagePath(string path)
+    {
+        if (String.IsNullOrEmpty(path))
+            return path;
+        if (path[0] == 'h') return path;
+        if (path[0] == '~') path = path.Substring(1);
+        string slash = path[0] == '/' ? "" : "/";
+        return slash + path;
+    }
+
+    public static string GetStatus(int status)
+    {
+        if (status == -1)
+            return "Не проверено преподавателем";
+        else if (status == 0)
+            return "Проверено преподавателем";
+        return "Error";
+    }
+}
+
+@helper EditIconLink(string url)
+{
+    <a style="display: inline-block" title="Редактировать" href="@url"><i class="fa fa-pencil fa-fw"></i>Изменить</a>
+}
+
+@helper DeleteIconLink(string url)
+{
+    <a style="display: inline-block" title="Удалить" href="@url"><i class="fa fa-trash-o fa-fw"></i>Удалить</a>
+}
+
+@helper Image(string path, string alt = "", string styles = "")
+{
+    if (String.IsNullOrWhiteSpace(path) || path[0] == '?')
+    {
+        <img style="@styles" class="thumb" src="/Images/no-image.png" alt="@alt" title="@alt" />
+    }
+    else
+    {
+        <img style="@styles" class="thumb" src="@DefineImagePath(path)" alt="@alt" title="@alt" />
+    }
+}
+
 
 @helper AddButton(HtmlString actionLink)
 {
@@ -13,7 +58,7 @@
     {
         string classes = "alert  alert-dismissable ";
         classes += result.Succeeded ? "alert-success" : "alert-danger";
-        <div class="@classes">
+        <div class="@classes" style="margin-top:80px">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
             @if (html == null)
             {
@@ -27,6 +72,15 @@
     }
 }
 
+@helper DropDownList(HtmlHelper html, string labelText, string id, IEnumerable items, string valueField = "Id", string textField = "Name", object selectedValue = null)
+{
+    <div class="form-group">
+        <label class="control-label col-md-2">@labelText</label>
+        <div class="fleft pad-15">
+            @html.DropDownList(id, new SelectList(items, valueField, textField, selectedValue), new { @class = "form-control" })
+        </div>
+    </div>
+}
 
 @helper EditButton(HtmlString actionLink)
 {
@@ -46,7 +100,7 @@
             <img class="thumb" src="@path" alt="@alt" title="@alt" />
             <img class="cross" onclick="HideImage()" src="/Images/Icons/x.png" title="Удалить" alt="Удалить" />
         </div>
-            <script>
+        <script>
             //TODO: fix with multiple
             function HideImage() {
                 $(".removable-image").hide('slow');

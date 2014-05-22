@@ -152,7 +152,7 @@
     <Key>
       <PropertyRef Name="Id" />
     </Key>
-    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
   </EntityType>
   <Association Name="FK__Departmen__Facul__5E8A0973">
@@ -183,7 +183,7 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="FK__Student__GroupId__6FB49575">
+  <Association Name="FK__Student__GroupId__2EA5EC27">
     <End Role="StudentGroup" Type="Self.StudentGroup" Multiplicity="1">
       <OnDelete Action="Cascade" />
     </End>
@@ -426,7 +426,7 @@
       <End Role="Department" EntitySet="Department" />
       <End Role="Lecturer" EntitySet="Lecturer" />
     </AssociationSet>
-    <AssociationSet Name="FK__Student__GroupId__6FB49575" Association="Self.FK__Student__GroupId__6FB49575">
+    <AssociationSet Name="FK__Student__GroupId__2EA5EC27" Association="Self.FK__Student__GroupId__2EA5EC27">
       <End Role="StudentGroup" EntitySet="StudentGroup" />
       <End Role="Student" EntitySet="Student" />
     </AssociationSet>

@@ -60,6 +60,9 @@ namespace DistantLearningSystem
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));
 
+            bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
+                      "~/Scripts/Custom/custom.js"));
+
             #region Main
 
             bundles.Add(new StyleBundle("~/bundles/Main/SharedStyles").Include(

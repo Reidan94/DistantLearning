@@ -25,7 +25,7 @@ namespace DistantLearningSystem.Models.DataModels
         {
             Id = id;
             Succeeded = succeeded;
-
+            Message = message;
         }
     }
 
@@ -39,7 +39,10 @@ namespace DistantLearningSystem.Models.DataModels
             new ProcessResult(3, true, "Регистраци подтверждена! Теперь Вы можете пользоваться своим личным кабинетом!"),
             new ProcessResult(4, true, "Вы вошли в личный кабинет!"),
             new ProcessResult(5, false, "Неправильный фомат картинки!"),
-            new ProcessResult(6, false, "Произошла ошибка!")
+            new ProcessResult(6, false, "Произошла ошибка!"),
+            new ProcessResult(7, true, "Профиль успешно отредактирован! изменения вступили в силу!"),
+            new ProcessResult(8, false, "Вы уже преподаете в этой группе!" ),
+            new ProcessResult(9, true, "Группа была добавлена в Ваш список")
         };
 
         public static ProcessResult GetById(int id = -1)
@@ -81,6 +84,21 @@ namespace DistantLearningSystem.Models.DataModels
         public static ProcessResult ErrorOccured
         {
             get { return Results[6]; }
+        }
+
+        public static ProcessResult EditedSuccessfully
+        {
+            get { return Results[7]; }
+        }
+
+        public static ProcessResult YouAreAlreadyLecturer
+        {
+            get { return Results[8]; }
+        }
+
+        public static ProcessResult GroupWasSuccessfullyAdded
+        {
+            get { return Results[9]; }
         }
     }
 }

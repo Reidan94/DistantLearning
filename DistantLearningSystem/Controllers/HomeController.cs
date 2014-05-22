@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DistantLearningSystem.Models.DataModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -11,10 +12,11 @@ namespace DistantLearningSystem.Controllers
         //
         // GET: /Home/
 
-        public ActionResult Index()
+        public ActionResult Index(int? result)
         {
+            if (result.HasValue)
+                ViewBag.Result = ProcessResults.GetById(result.Value);
             return View();
         }
-
     }
 }
